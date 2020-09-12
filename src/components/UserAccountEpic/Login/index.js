@@ -2,15 +2,17 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Switch, Platform, TouchableOpacity, Image, ScrollView, ActivityIndicator } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { getUserData } from '../../../redux/selector';
+import { authenticateUser } from '../../../api/acServer';
 
 
 function Login() {
     const [stayConnected, setStayConnected] = useState(true);
     const [loginError, setLoginError] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const dispatch = useDispatch();
 
     const userData = useSelector(getUserData); // peut etre pas besoin d'avoir les données de l'utilisateur içi ????
 
@@ -18,6 +20,20 @@ function Login() {
     let password;
     let urlServer;
     let apiKey;
+
+    const _sendLogin = () => {
+        authenticateUser(dispatch, urlServer, {
+            username: username,
+            password: password,
+            token: apiKey
+        },
+        () => setIsLoading(true),
+        () => {
+            setLoginError(!loginError);
+            setIsLoading(false);
+        }
+        );
+    };
 
     return (
         <View style={styles.main}>
@@ -70,7 +86,7 @@ function Login() {
                                 </View>
                                 <TouchableOpacity
                                     style={styles.buttonLogin}
-                                    onPress={() => {}}
+                                    onPress={() => _sendLogin()}
                                 >
                                     <View style={styles.blocButtonLogin}>
                                         <Text style={styles.textButtonLogin}>CONNEXION</Text>
