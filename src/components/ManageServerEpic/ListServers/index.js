@@ -1,28 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StatusBar, Image, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
 
-import ItemServer from '../ItemServers';
+import ItemServer from '../ItemServer';
+import { fetchServers } from '../../../api/acServer';
+import { getAllServers, getUserData } from '../../../redux/selector';
+
 
 function ListServers(props) {
-    const [servers, setServers] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const navigation = props.navigation;
+
+    const dispatch = useDispatch();
+    const servers = useSelector(getAllServers);
+    const userData = useSelector(getUserData);
 
     const _renderItem = ({item}) => {
         return <ItemServer server={item} navigation={navigation}/>
     }
 
+    useEffect(() => {
+        fetchServers(dispatch, userData.urlServer, userData,
+            () => setIsLoading(false),    
+        );
+    }, []);
+
     const _displayServers = () => {
         if (servers.length > 0) {
-            <View style={styles.container}>
-                <Text style={styles.title}>Vos Serveurs !</Text>
-                <FlatList
-                    style={styles.listingServerBloc}
-                    data={servers}
-                    keyExtractor={(item) => item.id.toString()}
-                    renderItem={_renderItem}
-                />
-            </View>
+            return (
+                <View style={styles.container}>
+                    <Text style={styles.title}>Vos Serveurs !</Text>
+                    <FlatList
+                        style={styles.listingServerBloc}
+                        data={servers}
+                        keyExtractor={(item) => item.id.toString()}
+                        renderItem={_renderItem}
+                    />
+                </View>
+            );
         } else {
             return (
                 <View style={styles.noServerBloc}>
@@ -39,8 +54,11 @@ function ListServers(props) {
             <StatusBar backgroundColor="#0d96d1" barStyle="light-content"/>
             {
                 isLoading ?
-                <ActivityIndicator animating size="large"/> :
-                _displayServers
+                <View style={styles.loading}>
+                    <Text style={styles.textLoading}>Chargement de vos serveur en cours...</Text>
+                    <ActivityIndicator animating size="small"/>
+                </View> :
+                _displayServers()
             }
             
         </View>
@@ -75,6 +93,15 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         fontSize: 20,
         fontWeight: 'bold'
+    },
+    loading: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    textLoading: {
+        marginBottom: 20,
+        fontSize: 16
     },
 });
 

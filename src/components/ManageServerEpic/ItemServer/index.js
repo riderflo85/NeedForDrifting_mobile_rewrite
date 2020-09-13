@@ -1,21 +1,19 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, Platform, StyleSheet } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useSelector } from 'react-redux';
 
 
 function ItemServer(props) {
     const navigation = props.navigation;
-    // const server = useSelector(MonSelecteur)
+    const server = props.server;
 
-    const status = 'running'; // for test
 
     const _getStateServer = () => {
         let colorLight = 'white';
 
-        if (status === 'running') {
+        if (server.status === 'running') {
             colorLight = '#009900';
-        } else if (status === 'stoping') {
+        } else if (server.status === 'stoping') {
             colorLight = '#ff2418';
         } else {
             colorLight = '#9900ff';
@@ -31,10 +29,10 @@ function ItemServer(props) {
             <View style={styles.section}>
                 <View style={styles.stateServerBloc}>
                     <MaterialCommunityIcons name="traffic-light" size={30} color="black"/>
-                    {_getStateServer}
+                    {_getStateServer()}
                 </View>
                 <View style={styles.nameServer}>
-                    <Text>{this.state.server.name}</Text>
+                    <Text>{server.name}</Text>
                 </View>
                 <View style={styles.rightArrow}>
                     <MaterialCommunityIcons name={Platform.OS === 'ios' ? "chevron-right" : "arrow-right"} size={25} color="#0d96d1"/>
