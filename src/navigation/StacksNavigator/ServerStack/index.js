@@ -2,7 +2,7 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import ListServers from '../../../components/ManageServerEpic/ListServers';
-// import DetailServer from '../../../components/ManageServerEpic/DetailServer';
+import DetailServer from '../../../components/ManageServerEpic/DetailServer';
 
 
 const Stack = createStackNavigator();
@@ -21,7 +21,7 @@ export function ServerStackScreen() {
                     headerTintColor: '#fff',
                 }}
             />
-            {/* <Stack.Screen
+            <Stack.Screen
                 name="Detail server"
                 component={DetailServer}
                 options={{
@@ -31,7 +31,7 @@ export function ServerStackScreen() {
                     },
                     headerTintColor: '#fff',
                 }}
-            /> */}
+            />
         </Stack.Navigator>
     );
 }
