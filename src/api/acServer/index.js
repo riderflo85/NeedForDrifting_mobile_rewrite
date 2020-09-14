@@ -57,3 +57,26 @@ export async function fetchServers(dispatch, urlServer, userData, loadingCb, sta
         loadingCb();
     }
 }
+
+export async function fetchTracks(dispatch, urlServer, userData, loadingCb) {
+    try {
+        const url = urlServer + "/api/v1/get_tracks";
+        const response = await axios.get(url, {
+            params: {
+                username: userData.username,
+                api: userData.token
+            }
+        });
+
+        loadingCb();
+        if (!response.data.error) {
+            dispatch(getAllTracksAction(response.data.tracks));
+        } else {
+
+        }
+
+    } catch (error) {
+        console.log(error);
+        loadingCb();
+    }
+}

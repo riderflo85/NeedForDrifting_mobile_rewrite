@@ -1,14 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, RefreshControl, ActivityIndicator, StyleSheet } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { useSelector, useDispatch } from 'react-redux';
+
+import { getAllTracks, getUserData } from '../../../redux/selector';
+import { fetchTracks } from '../../../api/acServer';
 
 
 function DetailServer(props) {
     const [isLoadingAction, setIsLoadingAction] = useState(false);
     const [isLoadingContent, setIsLoadingContent] = useState(false); // true is default
+    const dispatch = useDispatch();
 
+    const userData = useSelector(getUserData);
+    const tracks = useSelector(getAllTracks);
     const server = props.route.params.server[0];
+
+    useEffect(() => {
+        fetchTracks(dispatch, userData.urlServer, userData,
+            () => setIsLoadingContent(false)
+        );
+    }, []);
 
 
     const _stateServer = () => {
