@@ -30,7 +30,10 @@ function ListServers(props) {
     }
 
     const _displayServerDetail = (idServer) => {
-        navigation.navigate('Detail server', {idServer: idServer});
+        navigation.navigate('Detail server', {
+            idServer: idServer,
+            server: servers.filter(el => el.id === idServer)
+        });
     }
 
     const _displayServers = () => {

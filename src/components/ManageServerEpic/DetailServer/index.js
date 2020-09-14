@@ -3,17 +3,19 @@ import { View, Text, TouchableOpacity, ScrollView, RefreshControl, ActivityIndic
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
+
 function DetailServer(props) {
     const [isLoading, setIsLoading] = useState(false);
 
-    const serverStatus = 'running'; // For test in dev
+    const server = props.route.params.server[0];
+
 
     const _stateServer = () => {
         let colorLight = 'white';
 
-        if (serverStatus === 'running') {
+        if (server.status === 'running') {
             colorLight = '#009900';
-        } else if (serverStatus === 'stoping') {
+        } else if (server.status === 'stoping') {
             colorLight = '#ff2418';
         } else {
             colorLight = '#9900ff';
@@ -24,7 +26,8 @@ function DetailServer(props) {
     return (
         <View style={styles.container}>
             <ScrollView contentContainerStyle={{flex: 1}} refreshControl={
-                <RefreshControl refreshing={() => {}} onRefresh={() => {}}/>
+                // <RefreshControl refreshing={() => {}} onRefresh={() => {}}/>
+                () => {}
             }>
                 <KeyboardAwareScrollView>
                     <View style={[styles.borderAndColorBloc, styles.dataServer]}>
@@ -33,7 +36,7 @@ function DetailServer(props) {
                                 <MaterialCommunityIcons name="traffic-light" size={45} color="black"/>
                                 {_stateServer()}
                             </View>
-                            <Text style={styles.titleServer}>Nom du serveur</Text>
+                            <Text style={styles.titleServer}>{server.name}</Text>
                         </View>
                         <View style={styles.bodyBloc}>
                             <View style={styles.iconsView}>
@@ -44,7 +47,7 @@ function DetailServer(props) {
                             <View style={styles.dataView}>
                                 <Text style={{marginBottom: 15, flexWrap: 'wrap'}}>/home/acServer/acServerPro/bin/savegame/cfg/linux/init.cfg</Text>
                                 <Text style={{marginBottom: 15}}>/home/acServer/acServerPro/bin/savegame/cfg/linux/car.list</Text>
-                                <Text style={{marginBottom: 15}}>Status du serveur</Text>
+                                <Text style={{marginBottom: 15}}>{server.status}</Text>
                             </View>
                         </View>
                     </View>
@@ -52,7 +55,7 @@ function DetailServer(props) {
                     {
                         isLoading ?
                         <View style={[styles.borderAndColorBloc, styles.actionServer]}>
-                            <ActivityIndicator size="large"/>
+                            <ActivityIndicator size="small"/>
                         </View> :
                         <View style={[styles.borderAndColorBloc, styles.actionServer]}>
                             <TouchableOpacity 
