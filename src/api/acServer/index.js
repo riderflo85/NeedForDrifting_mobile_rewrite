@@ -1,6 +1,11 @@
 import axios from 'axios';
 
-import { loginUserDataAction, getAllServersAction, getAllTracksAction } from '../../redux/actions';
+import {
+    loginUserDataAction,
+    getAllServersAction,
+    getAllTracksAction,
+    runServerCmdAction,
+} from '../../redux/actions';
 
 export async function authenticateUser(dispatch, urlServer, userData, loadingCb, statusResponseCb) {
     try {
@@ -74,6 +79,46 @@ export async function fetchTracks(dispatch, urlServer, userData, loadingCb) {
         } else {
 
         }
+
+    } catch (error) {
+        console.log(error);
+        loadingCb();
+    }
+}
+
+export async function runCommand(dispatch, urlServer, userData, idServer, cmd, loadingCb, setStatusCb) {
+    try {
+        const url = urlServer + "/api/v1/run_command";
+        const response = await axios.get(url, {
+            params: {
+                username: userData.username,
+                api: userData.token,
+                server_id: idServer,
+                server_cmd: cmd
+            }
+        });
+
+        loadingCb();
+
+        if (response.data.state.check) {
+            const newStatus = response.data.state.res === 'run' ? 'running' : 'stoping';
+
+            dispatch(runServerCmdAction({
+                idServer: idServer,
+                status: newStatus
+            }));
+
+            setStatusCb(newStatus);
+
+        } else {
+            dispatch(runServerCmdAction({
+                idServer: idServer,
+                status: 'error'
+            }));
+            
+            setStatusCb('error');
+        }
+
 
     } catch (error) {
         console.log(error);

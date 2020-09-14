@@ -5,12 +5,13 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { useSelector, useDispatch } from 'react-redux';
 
 import { getAllTracks, getUserData } from '../../../redux/selector';
-import { fetchTracks } from '../../../api/acServer';
+import { fetchTracks, runCommand } from '../../../api/acServer';
 
 
 function DetailServer(props) {
     const [isLoadingAction, setIsLoadingAction] = useState(false);
     const [isLoadingContent, setIsLoadingContent] = useState(false); // true is default
+    const [status, setStatus] = useState(undefined);
     const dispatch = useDispatch();
 
     const userData = useSelector(getUserData);
@@ -19,7 +20,7 @@ function DetailServer(props) {
 
     useEffect(() => {
         fetchTracks(dispatch, userData.urlServer, userData,
-            () => setIsLoadingContent(false)
+            () => setIsLoadingContent(false),
         );
     }, []);
 
@@ -27,15 +28,23 @@ function DetailServer(props) {
     const _stateServer = () => {
         let colorLight = 'white';
 
-        if (server.status === 'running') {
-            colorLight = '#009900';
-        } else if (server.status === 'stoping') {
-            colorLight = '#ff2418';
-        } else {
+        if (status === 'error' || server.status === 'error') {
             colorLight = '#9900ff';
+        } else if (status === 'running' || server.status === 'running') {
+            colorLight = '#009900';
+        } else if (status === 'stoping' || server.status === 'stoping') {
+            colorLight = '#ff2418';
         }
+
         return <View style={[styles.stateServerColor, {backgroundColor: colorLight}]}></View>;
     };
+
+    const _runCommandServer = (cmd) => {
+        runCommand(dispatch, userData.urlServer, userData, server.id, cmd,
+            () => setIsLoadingAction(false),
+            (newStatus) => setStatus(newStatus)
+        );
+    }
 
     return (
         <View style={styles.container}>
@@ -79,25 +88,25 @@ function DetailServer(props) {
                             <View style={[styles.borderAndColorBloc, styles.actionServer]}>
                                 <TouchableOpacity 
                                     style={[styles.buttonAction, {backgroundColor: '#16a0b6', borderWidth: 3, borderColor: '#148c9f'}]}
-                                    onPress={() => {}/*_runCommandServer('status')*/}
+                                    onPress={() => _runCommandServer('status')}
                                 >
                                     <MaterialCommunityIcons name="information-outline" size={30} color="white"/>
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                     style={[styles.buttonAction, {backgroundColor: '#28a745', borderWidth: 3, borderColor: '#23903c'}]}
-                                    onPress={() => {}/*_runCommandServer('start')*/}
+                                    onPress={() => _runCommandServer('start')}
                                 >
                                     <MaterialCommunityIcons name="play-speed" size={30} color="white"/>
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                     style={[styles.buttonAction, {backgroundColor: '#ffc107', borderWidth: 3, borderColor: '#e6ac00'}]}
-                                    onPress={() => {}/*_runCommandServer('restart')*/}
+                                    onPress={() => _runCommandServer('restart')}
                                 >
                                     <MaterialCommunityIcons name="restart" size={30} color="white"/>
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                     style={[styles.buttonAction, {backgroundColor: '#dc3545', borderWidth: 3, borderColor: '#c32232'}]}
-                                    onPress={() => {}/*_runCommandServer('stop')*/}
+                                    onPress={() => _runCommandServer('stop')}
                                 >
                                     <MaterialCommunityIcons name="stop-circle-outline" size={30} color="white"/>
                                 </TouchableOpacity>
