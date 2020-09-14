@@ -15,15 +15,23 @@ function ListServers(props) {
     const servers = useSelector(getAllServers);
     const userData = useSelector(getUserData);
 
-    const _renderItem = ({item}) => {
-        return <ItemServer server={item} navigation={navigation}/>
-    }
-
     useEffect(() => {
         fetchServers(dispatch, userData.urlServer, userData,
             () => setIsLoading(false),    
         );
     }, []);
+
+    const _renderItem = ({item}) => {
+        return <ItemServer
+            server={item}
+            navigation={navigation}
+            displayServerDetail={_displayServerDetail}
+        />
+    }
+
+    const _displayServerDetail = (idServer) => {
+        navigation.navigate('Detail server', {idServer: idServer});
+    }
 
     const _displayServers = () => {
         if (servers.length > 0) {

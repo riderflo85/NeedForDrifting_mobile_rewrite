@@ -4,7 +4,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 
 function ItemServer(props) {
-    const navigation = props.navigation;
     const server = props.server;
 
 
@@ -24,7 +23,7 @@ function ItemServer(props) {
     return (
         <TouchableOpacity
             style={styles.container}
-            onPress={() => {}}
+            onPress={() => {props.displayServerDetail(server.id)}}
         >
             <View style={styles.section}>
                 <View style={styles.stateServerBloc}>
