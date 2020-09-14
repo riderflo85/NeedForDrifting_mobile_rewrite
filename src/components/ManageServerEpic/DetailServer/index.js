@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { getAllTracks, getUserData } from '../../../redux/selector';
 import { fetchTracks, runCommand } from '../../../api/acServer';
+import UpdateTrack from '../UpdateTrack';
 
 
 function DetailServer(props) {
@@ -75,11 +76,12 @@ function DetailServer(props) {
                                 <View style={styles.dataView}>
                                     <Text style={{marginBottom: 15, flexWrap: 'wrap'}}>/home/acServer/acServerPro/bin/savegame/cfg/linux/init.cfg</Text>
                                     <Text style={{marginBottom: 15}}>/home/acServer/acServerPro/bin/savegame/cfg/linux/car.list</Text>
-                                    <Text style={{marginBottom: 15}}>{server.status}</Text>
+                                    <Text style={{marginBottom: 15}}>{server.track}</Text>
                                 </View>
                             </View>
                         </View>
                         {/* <UpdateTrack updateTracks={this.tracks} server={this.state.server}/> */}
+                        <UpdateTrack tracks={tracks}/>
                         {
                             isLoadingAction ?
                             <View style={[styles.borderAndColorBloc, styles.actionServer]}>
