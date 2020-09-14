@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Picker, Modal, Platform, Button, Alert, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Modal, Platform, Button, Alert, StyleSheet } from 'react-native';
+import { Picker } from '@react-native-community/picker';
 
 
 function UpdateTrack(props) {
