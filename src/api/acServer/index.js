@@ -5,6 +5,7 @@ import {
     getAllServersAction,
     getAllTracksAction,
     runServerCmdAction,
+    updateTrackAction,
 } from '../../redux/actions';
 
 export async function authenticateUser(dispatch, urlServer, userData, loadingCb, statusResponseCb) {
@@ -117,6 +118,38 @@ export async function runCommand(dispatch, urlServer, userData, idServer, cmd, l
             }));
             
             setStatusCb('error');
+        }
+
+
+    } catch (error) {
+        console.log(error);
+        loadingCb();
+    }
+}
+
+export async function updateTrack(dispatch, urlServer, userData, idServer, idTrack, trackName, configTrack, maxClients, loadingCb) {
+    try {
+        const url = urlServer + "/api/v1/change_track";
+        const response = await axios.get(url, {
+            params: {
+                username: userData.username,
+                api: userData.token,
+                server_id: idServer,
+                track_id: idTrack,
+                config_track: configTrack,
+                max_clients: maxClients
+            }
+        });
+
+        loadingCb();
+
+        if (response.data.state) {
+            dispatch(updateTrack({
+                idServer: idServer,
+                trackName: trackName
+            }));
+        } else {
+            
         }
 
 

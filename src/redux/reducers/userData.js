@@ -11,7 +11,7 @@ import { LOGIN_USER_DATA, SAVE_USER_DATA } from '../actionsTypes';
 // For test in dev
 const initialState = {
     username: "admin",
-    urlServer: "http://192.168.1.47:8000",
+    urlServer: "http://192.168.1.17:8000",
     token: "Ihzt3xi5R5jqCMgVVi9UMwmi",
     isLogin: false
 };

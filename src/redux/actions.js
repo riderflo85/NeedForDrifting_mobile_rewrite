@@ -3,7 +3,8 @@ import {
     SAVE_USER_DATA,
     GET_ALL_SERVER,
     GET_ALL_TRACKS,
-    RUN_SERVER_CMD
+    RUN_SERVER_CMD,
+    CHANGE_TRACK
 } from './actionsTypes';
 
 
@@ -38,6 +39,13 @@ export function getAllTracksAction(data) {
 export function runServerCmdAction(data) {
     return {
         type: RUN_SERVER_CMD,
+        value: { data: data }
+    };
+}
+
+export function updateTrackAction(data) {
+    return {
+        type: CHANGE_TRACK,
         value: { data: data }
     };
 }
