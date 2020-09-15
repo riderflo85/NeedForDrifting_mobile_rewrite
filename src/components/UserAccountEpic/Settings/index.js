@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Alert, Button, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Alert, Button, TouchableOpacity, StyleSheet, LogBox } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { getUserData } from '../../../redux/selector';
 
@@ -10,12 +10,15 @@ function Settings(props) {
     const [btnValideUsername, setBtnValideUsername] = useState(false);
     const [btnValideUrl, setBtnValideUrl] = useState(false);
     const [btnValideToken, setBtnValideToken] = useState(false);
+    const [username, setUsername] = useState('');
+    const [url, setUrl] = useState('');
+    const [token, setToken] = useState('');
 
     const userData = useSelector(getUserData);
 
-    let usernameInput;
-    let urlInput;
-    let tokenInput;
+    let usernameInput = '';
+    let urlInput = '';
+    let tokenInput = '';
 
 
     const _displayInputData = (type) => {
@@ -43,7 +46,10 @@ function Settings(props) {
                             <TouchableOpacity onPress={() => setBtnValideUsername(false)}>
                                 {iconClose}
                             </TouchableOpacity>
-                            <TouchableOpacity style={{marginLeft: 5}} onPress={() => setBtnValideUsername(false)}>
+                            <TouchableOpacity style={{marginLeft: 5}} onPress={() => {
+                                setUsername(usernameInput);
+                                setBtnValideUsername(false);
+                            }}>
                                 {iconCheck}
                             </TouchableOpacity>
                         </View>
@@ -53,7 +59,7 @@ function Settings(props) {
                 return (
                     <View style={subStyles}>
                         {icon}
-                        <Text>{userData.username}</Text>
+                        <Text>{username === '' ? userData.username : username}</Text>
                         <TouchableOpacity onPress={() => setBtnValideUsername(true)}>
                             {iconEdit}
                         </TouchableOpacity>
@@ -81,7 +87,10 @@ function Settings(props) {
                             <TouchableOpacity onPress={() => setBtnValideUrl(false)}>
                                 {iconClose}
                             </TouchableOpacity>
-                            <TouchableOpacity style={{marginLeft: 5}} onPress={() => setBtnValideUrl(false)}>
+                            <TouchableOpacity style={{marginLeft: 5}} onPress={() => {
+                                setUrl(urlInput);
+                                setBtnValideUrl(false);
+                            }}>
                                 {iconCheck}
                             </TouchableOpacity>
                         </View>
@@ -91,7 +100,7 @@ function Settings(props) {
                 return (
                     <View style={subStyles}>
                         {icon}
-                        <Text>{userData.urlServer}</Text>
+                        <Text>{ url === '' ? userData.urlServer : url}</Text>
                         <TouchableOpacity onPress={() => setBtnValideUrl(true)}>
                             {iconEdit}
                         </TouchableOpacity>
@@ -120,7 +129,10 @@ function Settings(props) {
                             <TouchableOpacity onPress={() => setBtnValideToken(false)}>
                                 {iconClose}
                             </TouchableOpacity>
-                            <TouchableOpacity style={{marginLeft: 5}} onPress={() => setBtnValideToken(false)}>
+                            <TouchableOpacity style={{marginLeft: 5}} onPress={() => {
+                                setToken(tokenInput);
+                                setBtnValideToken(false);
+                            }}>
                                 {iconCheck}
                             </TouchableOpacity>
                         </View>
@@ -130,7 +142,7 @@ function Settings(props) {
                 return (
                     <View style={subStyles}>
                         {icon}
-                        <Text>{userData.token}</Text>
+                        <Text>{token ===  '' ? userData.token : token}</Text>
                         <TouchableOpacity onPress={() => setBtnValideToken(true)}>
                             {iconEdit}
                         </TouchableOpacity>
@@ -142,10 +154,18 @@ function Settings(props) {
 
     return (
         <View style={[styles.container, styles.main]}>
-            <View style={[styles.borderAndColorBloc, styles.dataInput]}>
-                {_displayInputData('username')}
-                {_displayInputData('urlServer')}
-                {_displayInputData('token')}
+            <View>
+                <TouchableOpacity style={styles.saveNewData}>
+                    <View style={styles.borderInverted}/>
+                    <View style={styles.iconSaveNewData}>
+                        <MaterialCommunityIcons name="content-save" size={25} color="#23903c"/>
+                    </View>
+                </TouchableOpacity>
+                <View style={[styles.borderAndColorBloc, styles.dataInput, {marginTop: 0, borderTopRightRadius: 0}]}>
+                    {_displayInputData('username')}
+                    {_displayInputData('urlServer')}
+                    {_displayInputData('token')}
+                </View>
             </View>
             <View style={{marginBottom: 25}}>
                 <Button title="Déconnexion" color="#c32232"/>
@@ -188,6 +208,31 @@ const styles = StyleSheet.create({
         padding: 15,
         marginTop: 20,
         marginBottom: 20,
+    },
+    saveNewData: {
+        flexDirection: 'row',
+        alignSelf: 'flex-end',
+    },
+    iconSaveNewData: {
+        width: 40,
+        height: 40,
+        backgroundColor: 'white',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 10,
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 0,
+    },
+    borderInverted: {
+        width: 20,
+        height: 20,
+        backgroundColor: 'rgb(228,228,228)',
+        borderBottomRightRadius: 10,
+        alignSelf: 'flex-end',
+        shadowColor: 'white',
+        shadowOpacity: 1,
+        shadowOffset: {height: 10, width: 10}
+
     },
 });
 
