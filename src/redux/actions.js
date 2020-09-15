@@ -4,7 +4,8 @@ import {
     GET_ALL_SERVER,
     GET_ALL_TRACKS,
     RUN_SERVER_CMD,
-    CHANGE_TRACK
+    CHANGE_TRACK,
+    UPDATE_USER_DATA
 } from './actionsTypes';
 
 
@@ -46,6 +47,13 @@ export function runServerCmdAction(data) {
 export function updateTrackAction(data) {
     return {
         type: CHANGE_TRACK,
+        value: { data: data }
+    };
+}
+
+export function updateUserDataAction(data) {
+    return {
+        type: UPDATE_USER_DATA,
         value: { data: data }
     };
 }

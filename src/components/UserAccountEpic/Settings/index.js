@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Alert, Button, TouchableOpacity, StyleSheet, LogBox } from 'react-native';
+import { View, Text, TextInput, Alert, Button, TouchableOpacity, StyleSheet } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { getUserData } from '../../../redux/selector';
+import UpdateUserData from './UpdateUserData';
 
 
 function Settings(props) {
@@ -13,6 +14,8 @@ function Settings(props) {
     const [username, setUsername] = useState('');
     const [url, setUrl] = useState('');
     const [token, setToken] = useState('');
+
+    const dispatch = useDispatch();
 
     const userData = useSelector(getUserData);
 
@@ -155,7 +158,7 @@ function Settings(props) {
     return (
         <View style={[styles.container, styles.main]}>
             <View>
-                <TouchableOpacity style={styles.saveNewData}>
+                <TouchableOpacity style={styles.saveNewData} onPress={() => UpdateUserData(dispatch, username, url, token, userData)}>
                     <View style={styles.borderInverted}/>
                     <View style={styles.iconSaveNewData}>
                         <MaterialCommunityIcons name="content-save" size={25} color="#23903c"/>

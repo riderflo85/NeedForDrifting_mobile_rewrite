@@ -25,7 +25,7 @@ function DetailServer(props) {
         );
     }, []);
 
-
+    console.log('in the detailServer component: ', userData);
     const _stateServer = () => {
         let colorLight = 'white';
 

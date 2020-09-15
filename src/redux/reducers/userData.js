@@ -1,4 +1,4 @@
-import { LOGIN_USER_DATA, SAVE_USER_DATA } from '../actionsTypes';
+import { LOGIN_USER_DATA, SAVE_USER_DATA, UPDATE_USER_DATA } from '../actionsTypes';
 
 
 // const initialState = {
@@ -34,6 +34,15 @@ export function userData(state=initialState, action) {
             nexState.username = action.value.data.username;
             nexState.urlServer = action.value.data.urlServer;
             nexState.token = action.value.data.token;
+
+            return nexState || state;
+
+        case UPDATE_USER_DATA:
+            nexState = state;
+            nexState.username = action.value.data.username;
+            nexState.urlServer = action.value.data.urlServer;
+            nexState.token = action.value.data.token;
+            nexState.isLogin = true;
 
             return nexState || state;
 

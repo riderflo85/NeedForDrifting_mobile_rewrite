@@ -82,7 +82,8 @@ export async function fetchTracks(dispatch, urlServer, userData, loadingCb) {
         }
 
     } catch (error) {
-        console.log(error);
+        console.log('fetchTracks', error);
+        console.log(userData);
         loadingCb();
     }
 }
