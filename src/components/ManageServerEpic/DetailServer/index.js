@@ -4,7 +4,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { getAllTracks, getUserData } from '../../../redux/selector';
+import { getAllTracks, getUserData, getAllServers } from '../../../redux/selector';
 import { fetchTracks, runCommand } from '../../../api/acServer';
 import UpdateTrack from '../UpdateTrack';
 
@@ -17,7 +17,7 @@ function DetailServer(props) {
 
     const userData = useSelector(getUserData);
     const tracks = useSelector(getAllTracks);
-    const server = props.route.params.server[0];
+    const server = useSelector(getAllServers).filter(server => server.id === props.route.params.idServer)[0];
 
     useEffect(() => {
         fetchTracks(dispatch, userData.urlServer, userData,
@@ -81,7 +81,7 @@ function DetailServer(props) {
                             </View>
                         </View>
                         {/* <UpdateTrack updateTracks={this.tracks} server={this.state.server}/> */}
-                        <UpdateTrack tracks={tracks}/>
+                        <UpdateTrack tracks={tracks} userData={userData} idServer={server.id}/>
                         {
                             isLoadingAction ?
                             <View style={[styles.borderAndColorBloc, styles.actionServer]}>

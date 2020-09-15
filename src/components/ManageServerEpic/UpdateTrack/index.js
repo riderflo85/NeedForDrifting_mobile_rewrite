@@ -1,15 +1,22 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Modal, Platform, Button, Alert, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Modal, Platform, Button, Alert, StyleSheet, ActivityIndicator } from 'react-native';
 import { Picker } from '@react-native-community/picker';
+import { useDispatch } from 'react-redux';
+
+import { updateTrack } from '../../../api/acServer';
 
 
 function UpdateTrack(props) {
     const tracks = props.tracks;
+    const userData = props.userData;
+    const idServer = props.idServer
     const [newTrackSelected, setNewTrackSelected] = useState('');
     const [displayModal, setDisplayModal] = useState(false);
+    const [isLoadingUpdateTrack, setIsLoadingUpdateTrack] = useState(false);
+    const dispatch = useDispatch();
 
-    let configNewTrack = { input: undefined, value: undefined };
-    let maxClients = { input: undefined, value: undefined };
+    let configNewTrack = { input: undefined, value: '' };
+    let maxClients = { input: undefined, value: '' };
 
     const _iosDisplayTrackSelected = () => {
         if (Platform.OS === 'ios') {
@@ -64,7 +71,10 @@ function UpdateTrack(props) {
                                     </Picker>
                                 </View>
                                 <View style={{flexDirection: 'row', justifyContent: 'space-around', marginTop: '40%', marginBottom: '5%'}}>
-                                    <Button title="Annuler" color='red' onPress={() => setDisplayModal(false)}/>
+                                    <Button title="Annuler" color='red' onPress={() => {
+                                        setDisplayModal(false);
+                                        setNewTrackSelected('');
+                                    }}/>
                                     <Button title="Valider" onPress={() => setDisplayModal(false)}/>
                                 </View>
                             </View>
@@ -88,59 +98,91 @@ function UpdateTrack(props) {
     };
 
     const _displayAlert = () => {
-        // let user = this.props.userData;
 
-        Alert.alert(
-            'Information',
-            'Le changement de la piste ne redémarre pas le serveur !!!',
-            [
-                {
-                    text: "OK"
-                }
-            ],
-            { cancelable: false }
-        );
-        // changeTrack(
-        //     user.urlServer,
-        //     user.username,
-        //     user.token,
-        //     this.props.server.id,
-        //     this.state.trackSelected.id,
-        //     this.configNewTrack.value,
-        //     this.maxClients.value
-        // ).then(data => {
-        //     if (data.state) {
-        //         this.configNewTrack.input.clear();
-        //         this.maxClients.input.clear();
-        //         this.setState({trackSelected: ''});
-        //     }
-        // });
+        if (newTrackSelected != '') {
+            if (maxClients.value != '') {
+                const status = updateTrack(
+                    dispatch,
+                    userData.urlServer,
+                    userData,
+                    idServer,
+                    newTrackSelected.id,
+                    newTrackSelected.name,
+                    configNewTrack.value,
+                    maxClients.value,
+                    () => {setIsLoadingUpdateTrack(true)},
+                );
+                status.then(() => {
+                    Alert.alert(
+                        'Information',
+                        'Le changement de la piste ne redémarre pas le serveur !!!',
+                        [
+                            {
+                                text: "OK"
+                            }
+                        ],
+                        { cancelable: false }
+                    );
+                    setIsLoadingUpdateTrack(false);
+                    setNewTrackSelected('');
+                });
+
+            } else {
+                Alert.alert(
+                    'Formulaire non valide !',
+                    'Merci de préciser le nombre de clients maximum !!!',
+                    [
+                        {
+                            text: "OK"
+                        }
+                    ],
+                    { cancelable: false }
+                );
+            }
+        } else {
+            Alert.alert(
+                'Formulaire non valide !',
+                'Merci de séléctionner une piste parmit la liste !!!',
+                [
+                    {
+                        text: "OK"
+                    }
+                ],
+                { cancelable: false }
+            );
+        }
     };
 
     return (
         <View style={[styles.borderAndColorBloc, styles.main]}>
-            <Text style={styles.titleBloc}>Changer la piste du serveur !</Text>
-            <Text style={styles.titleInput}><Text style={{color: '#dc3545'}}>*</Text>Nom de la piste : {_iosDisplayTrackSelected()}</Text>
-            {_displayPicker(tracks)}
-            <Text style={styles.titleInput}>Configuration de la piste (Sous piste) :</Text>
-            <TextInput
-                style={styles.inputArea}
-                onChangeText={(text) => configNewTrack.value = text}
-                ref={input => {configNewTrack.input = input}}
-            />
-            <Text style={styles.titleInput}><Text style={{color: '#dc3545'}}>*</Text>Client max (PitBox) :</Text>
-            <TextInput
-                style={styles.inputArea}
-                keyboardType="decimal-pad"
-                onChangeText={(text) => maxClients.value = text}
-                ref={input => {maxClients.input = input}}
-            />
-            <View style={styles.footerBloc}>
-                <Text style={{alignSelf: 'flex-end', color: '#737373'}}><Text style={{color: '#dc3545'}}>*</Text>Champs obligatoires</Text>
-                <TouchableOpacity style={styles.valideButton} onPress={_displayAlert}>
-                    <Text style={{textAlign: 'center', color: 'white', fontSize: 17}}>Valider</Text>
-                </TouchableOpacity>
-            </View>
+            {
+                isLoadingUpdateTrack ?
+                <ActivityIndicator animating size="small"/> :
+                <View>
+                    <Text style={styles.titleBloc}>Changer la piste du serveur !</Text>
+                    <Text style={styles.titleInput}><Text style={{color: '#dc3545'}}>*</Text>Nom de la piste : {_iosDisplayTrackSelected()}</Text>
+                    {_displayPicker(tracks)}
+                    <Text style={styles.titleInput}>Configuration de la piste (Sous piste) :</Text>
+                    <TextInput
+                        style={styles.inputArea}
+                        onChangeText={(text) => configNewTrack.value = text}
+                        ref={input => {configNewTrack.input = input}}
+                    />
+                    <Text style={styles.titleInput}><Text style={{color: '#dc3545'}}>*</Text>Client max (PitBox) :</Text>
+                    <TextInput
+                        style={styles.inputArea}
+                        keyboardType="decimal-pad"
+                        onChangeText={(text) => maxClients.value = text}
+                        ref={input => {maxClients.input = input}}
+                    />
+                    <View style={styles.footerBloc}>
+                        <Text style={{alignSelf: 'flex-end', color: '#737373'}}><Text style={{color: '#dc3545'}}>*</Text>Champs obligatoires</Text>
+                        <TouchableOpacity style={styles.valideButton} onPress={_displayAlert}>
+                            <Text style={{textAlign: 'center', color: 'white', fontSize: 17}}>Valider</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            }
         </View>
     );
 }

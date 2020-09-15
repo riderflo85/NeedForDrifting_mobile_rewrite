@@ -144,10 +144,11 @@ export async function updateTrack(dispatch, urlServer, userData, idServer, idTra
         loadingCb();
 
         if (response.data.state) {
-            dispatch(updateTrack({
+            dispatch(updateTrackAction({
                 idServer: idServer,
                 trackName: trackName
             }));
+
         } else {
             
         }
@@ -155,6 +156,6 @@ export async function updateTrack(dispatch, urlServer, userData, idServer, idTra
 
     } catch (error) {
         console.log(error);
-        loadingCb();
+        // loadingCb();
     }
 }
